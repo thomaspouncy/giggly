@@ -32,7 +32,7 @@ module Giggly
         if @secret_key
           response = self.class.post(url, :query => params.merge({:client_id=>@api_key,:client_secret=>@secret_key}), :format=>:json)
         elsif @access_token
-          response = self.class.post(url, :query => params.merge({:oauth_token=>@secret_key}), :format=>:json)
+          response = self.class.post(url, :query => params.merge({:oauth_token=>@access_token}), :format=>:json)
         end
         code = response.code
         parsed = response.parsed_response

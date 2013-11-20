@@ -2,7 +2,7 @@ module Giggly
   module Rest
     class Socialize
 
-      GIGYA_URL = "http://socialize.api.gigya.com/socialize."
+      GIGYA_URL = "https://socialize.gigya.com/socialize."
 
       attr_accessor :request
 

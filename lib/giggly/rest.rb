@@ -4,7 +4,7 @@ require 'cgi'
 
 module Giggly
   module Rest
-      
+
     class SocializeError < StandardError
       attr_reader :error_code
 

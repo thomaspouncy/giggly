@@ -18,8 +18,8 @@ module Giggly
       end
 
       def self.get_token(api_key,secret,uid)
-        @request = Giggly::Rest::Request.new(:api_key=>api_key,:secret=>secret)
-        @request.post "#{GIGYA_URL}get_token", {:grant_type=>"none",:x_siteUID=>uid}
+        @request = Giggly::Rest::Request.new(:api_key=>api_key,:secret_key=>secret)
+        @request.post "#{GIGYA_URL}getToken", {:grant_type=>"none",:x_siteUID=>uid}
       end
 
       # Disconnects the user from the provided network.

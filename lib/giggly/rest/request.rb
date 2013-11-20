@@ -30,20 +30,21 @@ module Giggly
       # Returns response data from the post request.
       def post(url, params = {})
         if @secret_key
-          response = self.class.post(url, :query => params.merge({:client_id=>@api_key,:client_secret=>@secret_key}))
+          response = self.class.post(url, :query => params.merge({:client_id=>@api_key,:client_secret=>@secret_key}), :format=>:json)
         elsif @access_token
-          response = self.class.post(url, :query => params.merge({:oauth_token=>@secret_key}))
+          response = self.class.post(url, :query => params.merge({:oauth_token=>@secret_key}), :format=>:json)
         end
-        response_key, response_data = response.shift
-        raise_errors(response_data)
-        response_data
+        code = response.code
+        parsed = response.parsed_response
+        raise_errors(code,parsed)
+        parsed
       end
-      # 
+      #
       # def sign(http_method, api_url, params)
       #   params.merge! "apiKey" => @api_key, "uid" => @uid
       #   params.merge  "sig" => signature(http_method, api_url, params)
       # end
-      # 
+      #
       # def signature(http_method, api_url, params)
       #   timestamp = Time.now.to_i.to_s
       #   params.merge!("nonce" => "#{@uid}#{timestamp}", "timestamp" => timestamp) ####
@@ -67,26 +68,9 @@ module Giggly
           [http_method, api_url, params_to_string(params)].collect! {|a| CGI.escape a}.join('&')
         end
 
-        def raise_errors(data)
-          return if '200' == data["statusCode"]
-          case data["statusCode"].to_i
-            when 400
-              raise Giggly::Rest::BadRequest.new(data)
-            when 401
-              raise Giggly::Rest::Unauthorized.new(data)
-            when 403
-              raise Giggly::Rest::Forbidden.new(data)
-            when 404
-              raise Giggly::Rest::NotFound.new(data)
-            when 411
-              raise Giggly::Rest::LengthRequired.new(data)
-            when 413
-              raise Giggly::Rest::RequestEntityTooLarge.new(data)
-            when 500
-              raise Giggly::Rest::InternalServerError.new(data)
-            when 503
-              raise Giggly::Rest::NotImplemented.new(data)
-          end
+        def raise_errors(code,parsed)
+          raise parsed["error"] if parsed.has_key?("error")
+          return
         end
 
     end

@@ -92,7 +92,7 @@ module Giggly
       # for how to create user_action_xml
       def publish_user_action(user_action_xml, providers = {})
         # validate_providers! %w[facebook yahoo], providers[:enabled_providers]
-        perform_post :publishUserAction, {:userAction => user_action_xml}.merge(provider_hash(providers))
+        perform_post :publishUserAction, {:userAction => user_action_xml,:format=>"json"}.merge(provider_hash(providers))
       end
 
       # Sends a notification to a list of friends
@@ -135,7 +135,7 @@ module Giggly
         end
 
         def provider_hash(providers)
-          { :enabledProviders  => (providers[:enabled_providers].join(',') if providers[:enabled_providers]),
+          { :enabledProviders  =>(providers[:enabled_providers].join(',') if providers[:enabled_providers]),
             :disabledProviders => (providers[:disabled_providers].join(',') if providers[:disabled_providers]) }
         end
 
